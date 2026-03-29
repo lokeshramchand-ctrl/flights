@@ -141,7 +141,7 @@ const MetricCard = ({ title, value, unit, sub, animDelay }: MetricCardProps) => 
       
       <p className="mb-2 text-[0.7rem] font-bold uppercase tracking-widest text-gray-400 font-sans z-10">{title}</p>
       <div className="flex items-baseline gap-2 z-10">
-        <span className="text-4xl md:text-5xl font-bold tracking-tighter text-white font-mono">{animated}</span>
+        <span className="text-4xl md:text-5xl font-bold tracking-tighter text-white font-sans">{animated}</span>
         {unit && <span className="text-sm font-medium text-gray-400 font-sans">{unit}</span>}
       </div>
       <div className="mt-3 flex items-center gap-2 text-xs font-medium text-gray-400 font-sans z-10">{sub}</div>
@@ -194,7 +194,7 @@ const Tooltip = ({ state }: { state: TooltipState }) => {
         <>
           <div className="mb-4 flex items-center justify-between border-b border-white/[0.08] pb-4">
             <div className="flex flex-col">
-              <span className="text-lg font-bold font-mono tracking-tight text-white">{f.flight_number}</span>
+              <span className="text-lg font-bold font-sans tracking-tight text-white">{f.flight_number}</span>
               <span className="text-xs font-medium text-gray-400">{f.airline}</span>
             </div>
             <span className={`rounded-lg border px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-widest ${STATUS_CLASSES[f.status]}`}>
@@ -202,9 +202,9 @@ const Tooltip = ({ state }: { state: TooltipState }) => {
             </span>
           </div>
           <div className="flex flex-col gap-2.5 text-[0.8rem]">
-            <div className="flex justify-between items-center"><span className="text-gray-500 font-medium tracking-wide uppercase text-[0.65rem]">Aircraft</span><b className="font-mono text-gray-200">{f.aircraft_type}</b></div>
-            <div className="flex justify-between items-center"><span className="text-gray-500 font-medium tracking-wide uppercase text-[0.65rem]">Block Time</span><b className="font-mono text-gray-200">{formatTime(f.block_time_start)} – {formatTime(f.block_time_end)}</b></div>
-            <div className="flex justify-between items-center"><span className="text-gray-500 font-medium tracking-wide uppercase text-[0.65rem]">Passengers</span><b className="font-mono text-gray-200">{f.pax_count}</b></div>
+            <div className="flex justify-between items-center"><span className="text-gray-500 font-medium tracking-wide uppercase text-[0.65rem]">Aircraft</span><b className="font-sans text-gray-200">{f.aircraft_type}</b></div>
+            <div className="flex justify-between items-center"><span className="text-gray-500 font-medium tracking-wide uppercase text-[0.65rem]">Block Time</span><b className="font-sans text-gray-200">{formatTime(f.block_time_start)} – {formatTime(f.block_time_end)}</b></div>
+            <div className="flex justify-between items-center"><span className="text-gray-500 font-medium tracking-wide uppercase text-[0.65rem]">Passengers</span><b className="font-sans text-gray-200">{f.pax_count}</b></div>
           </div>
           {f.conflict && (
             <div className="mt-4 rounded-lg bg-red-500/10 p-2.5 text-center text-[0.7rem] font-bold text-red-400 border border-red-500/20 uppercase tracking-widest anim-pulse">
@@ -281,7 +281,7 @@ const FlightBlock = ({
       onMouseMove={onTooltipMove}
     >
       <div className="flex flex-col leading-tight pointer-events-none w-full">
-        <span className="text-sm font-bold font-mono tracking-tight">{f.flight_number}</span>
+        <span className="text-sm font-bold font-sans tracking-tight">{f.flight_number}</span>
         <span className="text-[0.6rem] font-medium opacity-60 font-sans uppercase tracking-widest mt-0.5 truncate">{f.aircraft_type}</span>
       </div>
       
@@ -362,7 +362,6 @@ export default function OpsControl() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
         .font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-mono { font-family: 'Space Mono', monospace; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -484,7 +483,7 @@ export default function OpsControl() {
                   className="anim-slide-in-left flex h-16 md:h-20 flex-col items-center justify-center border-b border-white/[0.03] transition-colors hover:bg-white/[0.02]"
                   style={{ animationDelay: `${0.6 + i * 0.05}s` }}
                 >
-                  <span className="text-sm md:text-base font-bold font-mono text-gray-200">{stand.id}</span>
+                  <span className="text-sm md:text-base font-bold font-sans text-gray-200">{stand.id}</span>
                   <span className="text-[0.55rem] font-bold uppercase tracking-widest text-gray-500 mt-0.5">{stand.type}</span>
                 </div>
               ))}
@@ -498,7 +497,7 @@ export default function OpsControl() {
                 <div className="sticky top-0 z-20 flex h-12 md:h-14 border-b border-white/[0.06] bg-[#0A0A0C]/90 backdrop-blur-2xl">
                   {Array.from({ length: 24 }, (_, i) => (
                     <div key={i} className="flex shrink-0 items-center pl-4 border-l border-white/[0.03]" style={{ width: `${hourWidth}px` }}>
-                      <span className="text-[0.65rem] md:text-xs font-bold text-gray-400 font-mono tracking-wider">
+                      <span className="text-[0.65rem] md:text-xs font-bold text-gray-400 font-sans tracking-wider">
                         {i.toString().padStart(2, "0")}:00
                       </span>
                     </div>
