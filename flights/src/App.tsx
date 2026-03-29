@@ -1,11 +1,16 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Timeline from './pages/Timeline';
+import Chat from './pages/Chat';
 import './App.css';
 
 function App() {
   return (
-    <div>
-      <Timeline />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Timeline />} />
+        <Route path="/chat" element={<Chat />} />
+      </Routes>
+    </Router>
   );
 }
 
