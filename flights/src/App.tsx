@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Timeline from './pages/Timeline';
+import Timeline from './Timeline/App';
 import Chat from './Chat/App';
 import './App.css';
 
