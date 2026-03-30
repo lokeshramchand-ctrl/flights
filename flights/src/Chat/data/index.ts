@@ -3,7 +3,6 @@ import {
   AlertTriangle, BarChart3, Clock, Plane, Activity,
 } from "lucide-react";
 import type { Message, StructuredCard, SuggestedPrompt, ThemeVars } from "../types";
-
 // ─── Seed Conversation ────────────────────────────────────────────────────────
 export const INITIAL_MESSAGES: Message[] = [
   {
@@ -64,10 +63,6 @@ export const SUGGESTED_PROMPTS: SuggestedPrompt[] = [
   { text: "Reassign EK512 to a PLB stand",         icon: React.createElement(Plane,          { size: 14 }) },
   { text: "Show T1 capacity forecast",             icon: React.createElement(Activity,       { size: 14 }) },
 ];
-
-// ─── Simulated AI Response ────────────────────────────────────────────────────
-export const SIMULATED_RESPONSE =
-  "Based on the parameters, the request is feasible. I've updated the planner and notified the ground handlers. Let me know if you need to run a conflict check on the surrounding stands.";
 
 // ─── Live Telemetry Stats ─────────────────────────────────────────────────────
 export const TELEMETRY_STATS = [
