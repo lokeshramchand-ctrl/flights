@@ -1,34 +1,29 @@
 import React from "react";
 import { FlightBlock } from "./Flightblock";
-import { STANDS_DATA, MOCK_NOW_DECIMAL } from "../data";
-import type { Flight } from "../types";
+import { MOCK_NOW_DECIMAL } from "../data";
+import type { Flight, Stand } from "../types";
 
 interface GanttTimelineProps {
-  hourWidth:        number;
-  flightsByStand:   Record<string, Flight[]>;
-  animIndexByFlight:Record<string, number>;
-  dragOverStand:    string | null;
+  hourWidth:          number;
+  stands:             Stand[];                      // ← from API via useFlights
+  flightsByStand:     Record<string, Flight[]>;
+  animIndexByFlight:  Record<string, number>;
+  dragOverStand:      string | null;
   timelineWrapperRef: React.RefObject<HTMLDivElement>;
-  onDragStart:      (id: string) => void;
-  onDragOver:       (standId: string) => void;
-  onDragLeave:      () => void;
-  onDrop:           (standId: string) => void;
-  onTooltipEnter:   (e: React.MouseEvent, f: Flight) => void;
-  onTooltipLeave:   () => void;
-  onTooltipMove:    (e: React.MouseEvent) => void;
+  onDragStart:        (id: string) => void;
+  onDragOver:         (standId: string) => void;
+  onDragLeave:        () => void;
+  onDrop:             (standId: string) => void;
+  onTooltipEnter:     (e: React.MouseEvent, f: Flight) => void;
+  onTooltipLeave:     () => void;
+  onTooltipMove:      (e: React.MouseEvent) => void;
 }
 
 const HOUR_COUNT = 24;
 
-/**
- * Full Gantt timeline: sticky stand sidebar on the left,
- * horizontally-scrollable time grid on the right.
- *
- * Drag-and-drop events bubble up through callbacks so all flight state
- * lives in the parent hook (useFlights), keeping this component pure.
- */
 export const GanttTimeline: React.FC<GanttTimelineProps> = ({
   hourWidth,
+  stands,
   flightsByStand,
   animIndexByFlight,
   dragOverStand,
@@ -56,7 +51,7 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
             <span className="text-[0.6rem] font-bold uppercase tracking-widest text-gray-500">Stands</span>
           </div>
 
-          {STANDS_DATA.map((stand, i) => (
+          {stands.map((stand, i) => (
             <div
               key={stand.id}
               className="anim-slide-in-left flex h-16 md:h-20 flex-col items-center justify-center border-b border-white/[0.03] transition-colors hover:bg-white/[0.02]"
@@ -77,7 +72,7 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
         >
           <div className="relative h-full" style={{ minWidth: `${HOUR_COUNT * hourWidth}px` }}>
 
-            {/* Time header (sticky top) */}
+            {/* Time header */}
             <div className="sticky top-0 z-20 flex h-12 md:h-14 border-b border-white/[0.06] bg-[#0A0A0C]/90 backdrop-blur-2xl">
               {Array.from({ length: HOUR_COUNT }, (_, i) => (
                 <div
@@ -95,17 +90,13 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
             {/* Vertical grid lines */}
             <div className="absolute top-[56px] bottom-0 left-0 right-0 flex pointer-events-none z-0">
               {Array.from({ length: HOUR_COUNT }, (_, i) => (
-                <div
-                  key={i}
-                  className="shrink-0 border-l border-white/[0.02]"
-                  style={{ width: `${hourWidth}px` }}
-                />
+                <div key={i} className="shrink-0 border-l border-white/[0.02]" style={{ width: `${hourWidth}px` }} />
               ))}
             </div>
 
             {/* Stand rows / drop targets */}
             <div className="relative z-10">
-              {STANDS_DATA.map((stand) => (
+              {stands.map((stand) => (
                 <div
                   key={stand.id}
                   className={`relative h-16 md:h-20 border-b border-white/[0.03] transition-colors duration-200 ${
@@ -133,7 +124,7 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
               ))}
             </div>
 
-            {/* "Now" marker line */}
+            {/* "Now" marker */}
             <div
               className="anim-fade-up absolute bottom-0 top-0 z-10 w-[2px] bg-emerald-500/80 pointer-events-none shadow-[0_0_15px_rgba(16,185,129,0.6)]"
               style={{ left: mockNowLeft, animationDelay: "1.2s" }}

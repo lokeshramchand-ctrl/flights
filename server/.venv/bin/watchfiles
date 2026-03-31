@@ -1,4 +1,4 @@
-#!/home/lowsl/code/Flights/flight_api/.venv/bin/python3
+#!/home/lowsl/code/Flights/server/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
