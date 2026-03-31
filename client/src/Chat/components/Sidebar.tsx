@@ -1,6 +1,6 @@
 import React from "react";
-import { Radio, Wifi, ChevronRight, Moon, Sun, X } from "lucide-react";
-import { SUGGESTED_PROMPTS, TELEMETRY_STATS } from "../data";
+import { Radio, Moon, Sun, X, ChevronRight } from "lucide-react";
+import { SUGGESTED_PROMPTS } from "../data";
 
 interface SidebarProps {
   isOpen:       boolean;
@@ -41,11 +41,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               style={{ animation: "pulse-dot 2s infinite" }}
             />
             <Radio size={18} className="text-emerald-500" />
-            Ops Planner AI
+            Flights
           </div>
-          <p className="text-xs font-medium opacity-70" style={{ color: "var(--text-secondary)" }}>
-            Live stand allocation &amp; telemetry.
-          </p>
+          
         </div>
 
         <div className="flex items-center gap-2">
@@ -77,30 +75,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* ── Live Telemetry strip ── */}
-      <div
-        className="rounded-2xl border p-4 lg:p-5 flex flex-col gap-4 transition-theme backdrop-blur-md"
-        style={{ background: "var(--bg-surface)", borderColor: "var(--border)" }}
-      >
-        <div
-          className="flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-widest"
-          style={{ color: "var(--text-muted)" }}
-        >
-          <Wifi size={13} className="animate-pulse text-emerald-500" />
-          Live Telemetry
-        </div>
-
-        <div className="grid grid-cols-2 gap-y-4 gap-x-2">
-          {TELEMETRY_STATS.map(({ label, value, accent }) => (
-            <div key={label} className="flex flex-col gap-1">
-              <span className="text-[0.65rem] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                {label}
-              </span>
-              <span className={`font-mono text-lg lg:text-xl font-bold ${accent}`}>{value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── Suggested prompts ── */}
       <div className="flex flex-col gap-2.5 flex-1 overflow-y-auto scrollbar-hide pb-4">

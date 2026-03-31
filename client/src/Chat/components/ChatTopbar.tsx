@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, Zap, Menu } from "lucide-react";
+import { Zap, Menu } from "lucide-react";
 
 interface ChatTopbarProps {
   onOpenSidebar: () => void;
@@ -20,20 +20,34 @@ export const ChatTopbar: React.FC<ChatTopbarProps> = ({ onOpenSidebar }) => (
       </button>
 
       {/* Logo */}
-      <div
-        className="w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center shadow-lg relative"
-        style={{ background: "linear-gradient(135deg,#3b82f6,#1d4ed8)" }}
-      >
-        <Sparkles size={16} className="text-white" />
-      </div>
+      {/* Navbar buttons */}
+      <nav className="flex gap-3">
+        <button
+          className="px-4 py-2 rounded-full bg-black-500 text-white font-medium hover:bg-blue-400 transition-all"
+          onClick={() => window.location.href = "/timeline"}
+        >
+          Gnatt
+        </button>
+        <button
+          className="px-4 py-2 rounded-full bg-black-500 text-white font-medium hover:bg-blue-400 transition-all"
+          onClick={() => window.location.href = "/chat"}
+        >
+          Chat
+        </button>
+        <button
+          className="px-4 py-2 rounded-full bg-black-500 text-white font-medium hover:bg-blue-400 transition-all"
+          onClick={() => window.location.href = "/resource-graph"}
+        >
+          Resource Graph
+        </button>
+      </nav>
 
       {/* Title */}
       <div className="flex flex-col">
         <p className="text-[0.95rem] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
-          Nexus Assistant
+          
         </p>
         <p className="text-[0.7rem] font-medium" style={{ color: "var(--text-muted)" }}>
-          Stand ops · LHR
         </p>
       </div>
     </div>
@@ -47,7 +61,7 @@ export const ChatTopbar: React.FC<ChatTopbarProps> = ({ onOpenSidebar }) => (
         background:  "var(--bg-surface)",
       }}
     >
-      <Zap size={12} className="text-emerald-500" /> Online
+      <Zap size={12} className="text-emerald-500" /> 
     </div>
   </div>
 );

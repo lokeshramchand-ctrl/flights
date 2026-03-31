@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  AlertTriangle, BarChart3, Clock, Plane, Activity,
+  AlertTriangle, BarChart3, Clock, Activity,
 } from "lucide-react";
 import type { Message, StructuredCard, SuggestedPrompt, ThemeVars } from "../types";
 // ─── Seed Conversation ────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ export const SUGGESTED_PROMPTS: SuggestedPrompt[] = [
   { text: "Show me all delayed flights",           icon: React.createElement(AlertTriangle, { size: 14 }) },
   { text: "What's the current stand utilization?", icon: React.createElement(BarChart3,     { size: 14 }) },
   { text: "Which flights arrive in the next hour?",icon: React.createElement(Clock,          { size: 14 }) },
-  { text: "Reassign EK512 to a PLB stand",         icon: React.createElement(Plane,          { size: 14 }) },
+  // { text: "Reassign EK512 to a PLB stand",         icon: React.createElement(Plane,          { size: 14 }) },
   { text: "Show T1 capacity forecast",             icon: React.createElement(Activity,       { size: 14 }) },
 ];
 

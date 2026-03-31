@@ -5,7 +5,7 @@ import { INITIAL_MESSAGES } from "../data";
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 // ─── API base ─────────────────────────────────────────────────────────────────
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"; // Fetch from .env or fallback
 
 async function apiFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${BASE_URL}${path}`, options);

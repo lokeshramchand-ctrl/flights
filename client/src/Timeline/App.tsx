@@ -1,5 +1,4 @@
 import { AppHeader }        from "./components/Appheader";
-import { DashboardMetrics } from "./components/Dashboardmetrics";
 import { GanttTimeline }    from "./components/Gnatt";
 import { FlightTooltip }    from "./components/Flighttooltip";
 import { useTimeline }      from "./hooks/useTimeline";
@@ -31,7 +30,7 @@ export default function OpsControl() {
         <div className="absolute bottom-0 right-1/4 h-[500px] w-[500px] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none" />
 
         <AppHeader hourWidth={hourWidth} onZoomChange={setHourWidth} />
-        <DashboardMetrics />
+        {/* <DashboardMetrics /> */}
 
         {/* ── Loading state ── */}
         {isLoading && (

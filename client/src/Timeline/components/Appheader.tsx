@@ -17,14 +17,28 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ hourWidth, onZoomChange })
     {/* ── Left: branding ── */}
     <div className="flex items-center gap-5">
       {/* Live indicator */}
-      <div className="relative flex h-3.5 w-3.5 items-center justify-center">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75 duration-1000" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
-      </div>
-      <h1 className="text-2xl font-bold tracking-tight text-white">Ops Control</h1>
-      <span className="hidden md:inline-flex items-center rounded-full bg-white/[0.03] px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-widest text-gray-400 border border-white/[0.05]">
-        LHR • Terminals 1 &amp; 2
-      </span>
+
+      {/* Navbar buttons */}
+      <nav className="flex gap-3">
+        <button
+          className="px-4 py-2 rounded-full bg-black-500 text-white font-medium hover:bg-blue-400 transition-all"
+          onClick={() => window.location.href = "/timeline"}
+        >
+          Gnatt
+        </button>
+        <button
+          className="px-4 py-2 rounded-full bg-black-500 text-white font-medium hover:bg-blue-400 transition-all"
+          onClick={() => window.location.href = "/chat"}
+        >
+          Chat
+        </button>
+        <button
+          className="px-4 py-2 rounded-full bg-black-500 text-white font-medium hover:bg-blue-400 transition-all"
+          onClick={() => window.location.href = "/resource-graph"}
+        >
+          Resource Graph
+        </button>
+      </nav>
     </div>
 
     {/* ── Right: zoom slider ── */}
