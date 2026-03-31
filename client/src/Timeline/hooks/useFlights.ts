@@ -7,22 +7,22 @@ const BASE_URL = "http://localhost:8000";
 // ─── API helpers ──────────────────────────────────────────────────────────────
 
 async function fetchAllFlights(): Promise<Flight[]> {
-  const res  = await fetch(`${BASE_URL}/flights?per_page=100`);
+  const res = await fetch(`${BASE_URL}/flights?per_page=100`);
   const data = await res.json();
   return data.data as Flight[];
 }
 
 async function fetchAllStands(): Promise<Stand[]> {
-  const res  = await fetch(`${BASE_URL}/stands`);
+  const res = await fetch(`${BASE_URL}/stands`);
   const data = await res.json();
   return data as Stand[];
 }
 
 async function apiReassign(flightId: string, standId: string): Promise<Flight> {
   const res = await fetch(`${BASE_URL}/flights/${flightId}/reassign`, {
-    method:  "POST",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify({ target_stand_id: standId }),
+    body: JSON.stringify({ target_stand_id: standId }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.error?.message ?? `Reassign failed (${res.status})`);
@@ -32,27 +32,27 @@ async function apiReassign(flightId: string, standId: string): Promise<Flight> {
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface FlightsState {
-  flights:            Flight[];
-  stands:             Stand[];
-  isLoading:          boolean;
-  error:              string | null;
-  draggedId:          string | null;
-  dragOverStand:      string | null;
-  flightsByStand:     Record<string, Flight[]>;
-  animIndexByFlight:  Record<string, number>;
-  setDraggedId:       (id: string | null) => void;
-  setDragOverStand:   (id: string | null) => void;
-  handleDrop:         (standId: string) => void;
+  flights: Flight[];
+  stands: Stand[];
+  isLoading: boolean;
+  error: string | null;
+  draggedId: string | null;
+  dragOverStand: string | null;
+  flightsByStand: Record<string, Flight[]>;
+  animIndexByFlight: Record<string, number>;
+  setDraggedId: (id: string | null) => void;
+  setDragOverStand: (id: string | null) => void;
+  handleDrop: (standId: string) => void;
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useFlights(): FlightsState {
-  const [flights,       setFlights]       = useState<Flight[]>([]);
-  const [stands,        setStands]        = useState<Stand[]>([]);
-  const [isLoading,     setIsLoading]     = useState(true);
-  const [error,         setError]         = useState<string | null>(null);
-  const [draggedId,     setDraggedId]     = useState<string | null>(null);
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const [stands, setStands] = useState<Stand[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverStand, setDragOverStand] = useState<string | null>(null);
 
   // ── Load from API on mount ──────────────────────────────────────────────────
@@ -110,10 +110,24 @@ export function useFlights(): FlightsState {
       })
       .catch((err: Error) => {
         console.error("[useFlights] reassign failed:", err.message);
-        // Roll back — reload all flights from the server so state is consistent
+
+        // ── Show a brief toast so the user knows why it snapped back ──
+        const toast = document.createElement("div");
+        toast.textContent = `Error :  ${err.message}`;
+        toast.style.cssText = `
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #18181b; color: #f87171; border: 1px solid rgba(248,113,113,0.2);
+    padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
+    z-index: 9999; pointer-events: none; white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+
+        // Roll back
         fetchAllFlights()
           .then((fresh) => setFlights(detectConflicts(fresh)))
-          .catch(() => {}); // silent — we already logged above
+          .catch(() => { });
       });
   }, [draggedId]);
 
