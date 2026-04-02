@@ -36,43 +36,57 @@ export default function NexusOpsAssistant() {
     <>
       <style>{GLOBAL_STYLES}</style>
 
+      {/* ── 1. Main Layout: flex-col forces Topbar to the top ── */}
       <div
-        className="fixed inset-0 flex overflow-hidden transition-theme bg-[var(--bg-panel)]"
+        className="fixed inset-0 flex flex-col overflow-hidden transition-theme bg-[var(--bg-panel)]"
         style={{ ...(theme as React.CSSProperties), color: "var(--text-primary)" }}
       >
-        {/* ── Left sidebar ── */}
-        <Sidebar
-          isOpen={sidebarOpen}
-          isLight={isLight}
-          onClose={() => setSidebarOpen(false)}
-          onToggleTheme={toggleTheme}
-          onSendPrompt={handleSendFromSidebar}
-        />
+        {/* ── Topbar (Full Width) ── */}
+        <div className={`transition-opacity duration-300 z-40 ${panelVisible ? "opacity-100" : "opacity-0"}`}>
+          <ChatTopbar 
+            onOpenSidebar={() => setSidebarOpen(true)} 
+            isLight={isLight}
+            onToggleTheme={toggleTheme}
+          />
+        </div>
 
-        {/* ── Chat panel ── */}
-        <main
-          className={`flex-1 flex flex-col relative transition-theme ${panelVisible ? "opacity-100" : "opacity-0"}`}
-          style={{ background: "var(--bg-panel)" }}
-        >
-          <ChatTopbar onOpenSidebar={() => setSidebarOpen(true)} />
-
-          <MessageList
-            messages={messages}
-            isStreaming={isStreaming}
-            streamingText={streamingText}
-            toolVisible={toolVisible}
-            toolDone={toolDone}
-            historyRef={historyRef as React.RefObject<HTMLDivElement>}
+        {/* ── 2. Lower Container: Sidebar + Chat Panel Side-by-Side ── */}
+        <div className={`flex-1 flex overflow-hidden relative transition-opacity duration-300 ${panelVisible ? "opacity-100" : "opacity-0"}`}>
+          
+          {/* ── Left sidebar ── */}
+          <Sidebar
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            onSendPrompt={handleSendFromSidebar} isLight={false} onToggleTheme={function (): void {
+              throw new Error("Function not implemented.");
+            } }            // Note: isLight and onToggleTheme were removed from Sidebar 
+            // since they are now handled by the ChatTopbar above.
           />
 
-          <ChatInput
-            input={input}
-            isGenerating={isGenerating}
-            textareaRef={textareaRef as React.RefObject<HTMLTextAreaElement>}
-            onChange={setInput}
-            onSend={sendMessage}
-          />
-        </main>
+          {/* ── Chat panel ── */}
+          <main
+            className="flex-1 flex flex-col relative overflow-hidden"
+            style={{ background: "var(--bg-panel)" }}
+          >
+            <MessageList
+              messages={messages}
+              isStreaming={isStreaming}
+              streamingText={streamingText}
+              toolVisible={toolVisible}
+              toolDone={toolDone}
+              historyRef={historyRef as React.RefObject<HTMLDivElement>}
+            />
+
+            <ChatInput
+              input={input}
+              isGenerating={isGenerating}
+              textareaRef={textareaRef as React.RefObject<HTMLTextAreaElement>}
+              onChange={setInput}
+              onSend={sendMessage}
+            />
+          </main>
+
+        </div>
       </div>
     </>
   );
