@@ -29,7 +29,9 @@ export default function OpsControl() {
         <div className="absolute top-0 left-1/4 h-[500px] w-[500px] rounded-full bg-blue-600/5 blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 h-[500px] w-[500px] rounded-full bg-violet-600/5 blur-[120px] pointer-events-none" />
 
-        <AppHeader hourWidth={hourWidth} onZoomChange={setHourWidth} />
+        <AppHeader hourWidth={hourWidth} onZoomChange={setHourWidth} isLight={false} onToggleTheme={function (): void {
+          throw new Error("Function not implemented.");
+        } } />
         {/* <DashboardMetrics /> */}
 
         {/* ── Loading state ── */}
