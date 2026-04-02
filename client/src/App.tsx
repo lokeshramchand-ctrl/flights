@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Timeline from './Timeline/App';
 import Chat from './Chat/App';
-import ResourceGraph from './resource-graph/App';
+import ResourceGraph from './Resource/App';
 import './App.css';
 
 function App() {
