@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Sidebar }      from "./components/Sidebar";
-import { ChatTopbar }   from "./components/ChatTopbar";
-import { MessageList }  from "./components/MessageList";
-import { ChatInput }    from "./components/ChatInput";
-import { useChat }      from "./hooks/useChat";
-import { useTheme }     from "./hooks/useTheme";
+import { Sidebar } from "./components/Sidebar";
+import { ChatTopbar } from "./components/ChatTopbar";
+import { MessageList } from "./components/MessageList";
+import { ChatInput } from "./components/ChatInput";
+import { useChat } from "./hooks/useChat";
+import { useTheme } from "./hooks/useTheme";
 import { GLOBAL_STYLES } from "./styles/globalStyles";
 
 export default function NexusOpsAssistant() {
   const [panelVisible, setPanelVisible] = useState(false);
-  const [sidebarOpen,  setSidebarOpen]  = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { isLight, theme, toggleTheme } = useTheme();
 
@@ -43,8 +43,8 @@ export default function NexusOpsAssistant() {
       >
         {/* ── Topbar (Full Width) ── */}
         <div className={`transition-opacity duration-300 z-40 ${panelVisible ? "opacity-100" : "opacity-0"}`}>
-          <ChatTopbar 
-            onOpenSidebar={() => setSidebarOpen(true)} 
+          <ChatTopbar
+            onOpenSidebar={() => setSidebarOpen(true)}
             isLight={isLight}
             onToggleTheme={toggleTheme}
           />
@@ -52,15 +52,13 @@ export default function NexusOpsAssistant() {
 
         {/* ── 2. Lower Container: Sidebar + Chat Panel Side-by-Side ── */}
         <div className={`flex-1 flex overflow-hidden relative transition-opacity duration-300 ${panelVisible ? "opacity-100" : "opacity-0"}`}>
-          
+
           {/* ── Left sidebar ── */}
           <Sidebar
             isOpen={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
-            onSendPrompt={handleSendFromSidebar} isLight={false} onToggleTheme={function (): void {
-              throw new Error("Function not implemented.");
-            } }            // Note: isLight and onToggleTheme were removed from Sidebar 
-            // since they are now handled by the ChatTopbar above.
+            onSendPrompt={handleSendFromSidebar}
+
           />
 
           {/* ── Chat panel ── */}
