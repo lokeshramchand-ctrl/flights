@@ -1,5 +1,5 @@
 import React from "react";
-import { Sun, Moon } from "lucide-react";
+import { ThemeToggleButton } from "../../ThemeToggleButton";
 
 interface AppHeaderProps {
   hourWidth: number;
@@ -11,8 +11,6 @@ interface AppHeaderProps {
 export const AppHeader: React.FC<AppHeaderProps> = ({ 
   hourWidth, 
   onZoomChange,
-  isLight,
-  onToggleTheme
 }) => {
   const currentPath = window.location.pathname;
 
@@ -84,20 +82,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           />
         </div>
 
-        {/* Theme Toggle Button */}
-        <button
-          onClick={onToggleTheme}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center border transition-all duration-200 hover:scale-105 active:scale-95 shrink-0 shadow-sm"
-          style={{
-            background: "var(--bg-surface)",
-            borderColor: "var(--border)",
-            color: "var(--text-primary)",
-          }}
-          aria-label="Toggle Theme"
-        >
-          {isLight ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-
+       <ThemeToggleButton />
       </div>
     </header>
   );
