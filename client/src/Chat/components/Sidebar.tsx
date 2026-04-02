@@ -1,20 +1,16 @@
 import React from "react";
-import { Radio, Moon, Sun, X, ChevronRight } from "lucide-react";
+import { Radio, X, ChevronRight } from "lucide-react";
 import { SUGGESTED_PROMPTS } from "../data";
 
 interface SidebarProps {
   isOpen:       boolean;
-  isLight:      boolean;
   onClose:      () => void;
-  onToggleTheme: () => void;
   onSendPrompt: (text: string) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
-  isLight,
   onClose,
-  onToggleTheme,
   onSendPrompt,
 }) => (
   <>
@@ -43,23 +39,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <Radio size={18} className="text-emerald-500" />
             Flights
           </div>
-          
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Theme toggle */}
-          <button
-            onClick={onToggleTheme}
-            className="w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              background:  "var(--bg-surface)",
-              borderColor: "var(--border)",
-              color:       "var(--text-primary)",
-            }}
-          >
-            {isLight ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-
           {/* Mobile close */}
           <button
             onClick={onClose}
@@ -74,7 +56,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
       </div>
-
 
       {/* ── Suggested prompts ── */}
       <div className="flex flex-col gap-2.5 flex-1 overflow-y-auto scrollbar-hide pb-4">

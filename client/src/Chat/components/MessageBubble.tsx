@@ -32,15 +32,22 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     }
   }, [visible, message.showCard]);
 
-  const popClass = visible ? "msg-enter" : "opacity-0";
+  // Smooth fade and slide up transition
+  const popClass = visible 
+    ? "opacity-100 translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" 
+    : "opacity-0 translate-y-3";
 
   // ── User bubble ──────────────────────────────────────────────────────────────
   if (message.role === "user") {
     return (
       <div className={`flex justify-end w-full ${popClass}`}>
         <div
-          className="max-w-[90%] md:max-w-[78%] px-5 py-3.5 rounded-[24px] rounded-br-[6px] text-[0.95rem] leading-relaxed shadow-sm font-medium"
-          style={{ background: "var(--msg-user-bg)", color: "var(--msg-user-text)" }}
+          className="max-w-[90%] md:max-w-[78%] px-5 py-3 rounded-2xl rounded-br-sm text-[0.95rem] leading-relaxed shadow-sm font-medium border"
+          style={{ 
+            background: "var(--msg-user-bg)", 
+            color: "var(--msg-user-text)",
+            borderColor: "color-mix(in srgb, var(--msg-user-text) 10%, transparent)"
+          }}
         >
           {message.content}
         </div>
@@ -53,25 +60,28 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     return (
       <div className={`flex w-full ${popClass}`}>
         <div
-          className="ml-0 sm:ml-12 font-mono text-[0.75rem] px-4 py-3 rounded-xl flex flex-col gap-2 border w-fit max-w-[95%] sm:max-w-[85%] transition-all hover:border-purple-500/40"
+          className="ml-0 sm:ml-12 font-mono text-[0.75rem] px-3.5 py-3 rounded-xl flex flex-col gap-2.5 border shadow-sm w-fit max-w-[95%] sm:max-w-[85%] transition-colors duration-200"
           style={{
-            background:   "var(--tool-bg)",
-            borderColor:  "var(--tool-border)",
-            color:        "var(--tool-color)",
+            background:   "var(--bg-surface)",
+            borderColor:  "var(--border)",
+            color:        "var(--text-secondary)",
           }}
         >
-          <div className="flex items-center gap-2.5 font-bold tracking-tight">
-            <CheckCircle2 size={14} className="text-purple-500" />
+          <div className="flex items-center gap-2 font-medium tracking-tight" style={{ color: "var(--text-primary)" }}>
+            <CheckCircle2 size={14} className="text-emerald-500" />
             <span>{message.tool_name}</span>
-            <span className="opacity-50 text-[0.65rem] bg-purple-500/10 px-1.5 py-0.5 rounded">
-              [{message.duration}]
+            <span 
+              className="opacity-70 text-[0.65rem] px-1.5 py-0.5 rounded-md border"
+              style={{ background: "var(--bg-sidebar)", borderColor: "var(--border)" }}
+            >
+              {message.duration}
             </span>
           </div>
           <div
-            className="pl-6 text-[0.75rem] border-l-2 ml-1.5 font-medium leading-relaxed"
-            style={{ borderColor: "var(--tool-border)", color: "var(--text-secondary)" }}
+            className="pl-6 text-[0.75rem] border-l-2 ml-1.5 font-medium leading-relaxed opacity-80"
+            style={{ borderColor: "var(--border)" }}
           >
-            <span className="opacity-50 mr-2">&gt;</span>
+            <span className="opacity-40 mr-2">&gt;</span>
             {message.content}
           </div>
         </div>
@@ -85,35 +95,36 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   return (
     <div className={`flex w-full ${popClass}`}>
       <div className="flex gap-3 sm:gap-4 max-w-full md:max-w-[88%]">
-        {/* Avatar */}
+        
+        {/* Assistant Avatar */}
         <div
-          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex-shrink-0 flex items-center justify-center mt-1 shadow-md relative group overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-            boxShadow:  "0 4px 14px rgba(59,130,246,0.3)",
-          }}
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex-shrink-0 flex items-center justify-center mt-0.5 shadow-sm border bg-blue-500 text-white"
+          style={{ borderColor: "rgba(0,0,0,0.1)" }}
         >
-          <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-          <Bot size={18} className="text-white relative z-10" />
+          <Bot size={18} />
         </div>
 
-        {/* Text + optional card */}
+        {/* Assistant Text + Optional Card */}
         <div className="flex flex-col min-w-0">
           <div
-            className="text-[0.95rem] leading-[1.6] pt-1.5 font-medium"
+            className="text-[0.95rem] leading-[1.7] pt-1 font-medium tracking-tight"
             style={{ color: "var(--text-primary)" }}
           >
             {displayText.split("\n").map((line, i, arr) => (
-              <span key={i}>
+              <React.Fragment key={i}>
                 {line}
                 {i < arr.length - 1 && <br />}
-              </span>
+              </React.Fragment>
             ))}
-            {streaming && (
-              <span className="inline-block w-[6px] h-[16px] bg-blue-500 align-middle ml-1.5 rounded-sm animate-pulse" />
-            )}
+            {/* The typing animation (pulsing cursor) has been permanently removed from here */}
           </div>
-          {message.showCard && <FlightCard data={CARD_DATA} visible={cardVisible} />}
+          
+          {/* Card Wrapper with exact spacing */}
+          {message.showCard && (
+            <div className="mt-4">
+              <FlightCard data={CARD_DATA} visible={cardVisible} />
+            </div>
+          )}
         </div>
       </div>
     </div>

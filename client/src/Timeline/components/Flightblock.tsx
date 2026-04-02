@@ -38,13 +38,13 @@ export const FlightBlock: React.FC<FlightBlockProps> = ({
   const baseClass = f.conflict
     ? "border shadow-[0_0_15px_rgba(239,68,68,0.3)] anim-pulse-border"
     : f.terminal === "T1"
-      ? "border border-blue-400/20 bg-gradient-to-r from-blue-500/20 to-blue-500/5 text-blue-100 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:border-blue-400/50"
-      : "border border-violet-400/20 bg-gradient-to-r from-violet-500/20 to-violet-500/5 text-violet-100 shadow-[0_0_15px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-400/50";
+      ? "border border-blue-400/10 bg-gradient-to-r from-blue-500/15 to-blue-500/5 text-blue-100 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:border-blue-400/50"
+      : "border border-violet-400/10 bg-gradient-to-r from-violet-500/15 to-violet-500/5 text-violet-100 shadow-[0_0_15px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-400/50";
 
   return (
     <div
       draggable
-      className={`anim-pop-in absolute top-[10px] flex cursor-grab select-none items-center overflow-hidden rounded-lg px-3 py-1.5 backdrop-blur-md active:cursor-grabbing hover:z-20 transition-all duration-300 hover:-translate-y-1 ${baseClass}`}
+      className={`anim-pop-in absolute top-[10px] flex cursor-grab select-none items-center overflow-hidden rounded-lg px-2.5 py-1.5 backdrop-blur-md active:cursor-grabbing hover:z-20 transition-all duration-150 hover:-translate-y-[1px] hover:scale-[1.01] ${baseClass}`}
       style={{
         left:           `${startDec * hourWidth}px`,
         width:          `${(endDec - startDec) * hourWidth}px`,
@@ -56,7 +56,7 @@ export const FlightBlock: React.FC<FlightBlockProps> = ({
         onDragStart(f.id);
         e.dataTransfer.effectAllowed = "move";
         e.currentTarget.style.opacity   = "0.4";
-        e.currentTarget.style.transform = "scale(0.95)";
+        e.currentTarget.style.transform = "scale(0.97)";
       }}
       onDragEnd={(e) => {
         e.currentTarget.style.opacity   = "1";
@@ -67,14 +67,14 @@ export const FlightBlock: React.FC<FlightBlockProps> = ({
       onMouseMove={onTooltipMove}
     >
       <div className="flex flex-col leading-tight pointer-events-none w-full">
-        <span className="text-sm font-bold font-sans tracking-tight">{f.flight_number}</span>
-        <span className="text-[0.6rem] font-medium opacity-60 font-sans uppercase tracking-widest mt-0.5 truncate">
+        <span className="text-[13px] font-semibold font-sans tracking-tight">{f.flight_number}</span>
+        <span className="text-[10px] opacity-50 font-medium opacity-60 font-sans uppercase tracking-widest mt-0.5 truncate">
           {f.aircraft_type}
         </span>
       </div>
 
       {/* Decorative top-edge inner glow */}
-      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.05] pointer-events-none rounded-lg" />
+      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.03] pointer-events-none rounded-lg" />
     </div>
   );
 };
