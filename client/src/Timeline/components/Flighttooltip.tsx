@@ -25,9 +25,9 @@ export const FlightTooltip: React.FC<FlightTooltipProps> = ({ state }) => {
 
   // Flip left/up when near viewport edges
   let left = state.x + 20;
-  let top  = state.y + 20;
-  if (left + 260 > windowSize.width)  left = state.x - 280;
-  if (top  + 180 > windowSize.height) top  = state.y - 200;
+  let top = state.y + 20;
+  if (left + 260 > windowSize.width) left = state.x - 280;
+  if (top + 180 > windowSize.height) top = state.y - 200;
 
   return (
     <div
@@ -35,8 +35,9 @@ export const FlightTooltip: React.FC<FlightTooltipProps> = ({ state }) => {
       style={{
         left,
         top,
-        opacity:   state.visible ? 1 : 0,
-transform: state.visible ? "scale(1) translateY(0)" : "scale(0.97) translateY(6px)"      }}
+        opacity: state.visible ? 1 : 0,
+        transform: state.visible ? "scale(1) translateY(0)" : "scale(0.97) translateY(6px)"
+      }}
     >
       {f && (
         <>
@@ -56,7 +57,7 @@ transform: state.visible ? "scale(1) translateY(0)" : "scale(0.97) translateY(6p
           {/* Detail rows */}
           <div className="flex flex-col gap-2 text-[0.8rem]">
             {[
-              { label: "Aircraft",   value: f.aircraft_type },
+              { label: "Aircraft", value: f.aircraft_type },
               { label: "Block Time", value: `${formatTime(f.block_time_start)} – ${formatTime(f.block_time_end)}` },
               { label: "Passengers", value: String(f.pax_count) },
             ].map(({ label, value }) => (
