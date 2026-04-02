@@ -8,13 +8,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Check local storage so the app remembers the user's preference on reload
+  // Check local storage on initial load
   const [isLight, setIsLight] = useState(() => {
     const saved = localStorage.getItem("theme");
     return saved ? saved === "light" : true; 
   });
 
-  // Whenever isLight changes, update the DOM and save to localStorage
+  // Apply the CSS class to the <html> tag whenever the state changes
   useEffect(() => {
     const root = document.documentElement;
     if (isLight) {
@@ -35,7 +35,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-// Custom hook to use the theme anywhere
 export const useGlobalTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {

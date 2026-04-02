@@ -1,9 +1,9 @@
 import React from "react";
 import { Sun, Moon } from "lucide-react";
-import { useGlobalTheme } from "./ThemeProvider";
+import { useGlobalTheme } from "./ThemeProvider"; // Adjust path if needed
 
 interface ThemeToggleButtonProps {
-  className?: string; // Allows parent components to add specific margins/sizing if needed
+  className?: string;
 }
 
 export const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({ className = "" }) => {
@@ -14,12 +14,11 @@ export const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({ className 
       onClick={toggleTheme}
       className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center border transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm shrink-0 ${className}`}
       style={{
-        background: "var(--bg)", 
+        background: "var(--bg-surface)", 
         borderColor: "var(--border)",
-        color: "var(--text-h)", // Using text-h for higher contrast icons
+        color: "var(--text-primary)",
       }}
       aria-label={isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
-      title={isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
     >
       {isLight ? <Sun size={18} /> : <Moon size={18} />}
     </button>

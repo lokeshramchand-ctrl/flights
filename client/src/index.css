@@ -1,63 +1,71 @@
 @import "tailwindcss";  
 
+/* ── Light Mode (Default) ── */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* 1. App Layout & Chat Colors */
+  --bg-sidebar: #f4f4f5;
+  --bg-panel: #ffffff;
+  --bg-panel-hover: #f8f8f8;
+  --bg-surface: #ffffff;
+  --border: #e4e4e7;
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+  --msg-user-bg: #09090b;
+  --msg-user-text: #ffffff;
+  --tool-color: #7e22ce;
+  --tool-bg: #faf5ff;
+  --tool-border: #e9d5ff;
+  --card-bg: #ffffff;
+  --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
 
+  /* 2. Typography & Code Variables (Restored from your old CSS) */
+  --text-h: #08060d;
+  --code-bg: #f4f3ec;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-/* ── CHANGED: Now tied to a class so your React button can control it ── */
-.dark-theme {
-  --text: #9ca3af;
+/* ── Dark Mode ── */
+/* Changed to html.dark-theme to guarantee it overrides Light mode */
+html.dark-theme {
+  /* 1. App Layout & Chat Colors */
+  --bg-sidebar: #09090b;
+  --bg-panel: #000000;
+  --bg-panel-hover: #18181b;
+  --bg-surface: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.08);
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --msg-user-bg: #f4f4f5;
+  --msg-user-text: #000000;
+  --tool-color: #c084fc;
+  --tool-bg: rgba(168,85,247,0.05);
+  --tool-border: rgba(168,85,247,0.15);
+  --card-bg: rgba(255,255,255,0.02);
+  --card-shadow: 0 20px 40px -20px rgba(0,0,0,0.8);
+
+  /* 2. Typography & Code Variables (Restored) */
   --text-h: #f3f4f6;
-  --bg: #16171d;
-  --border: #2e303a;
   --code-bg: #1f2028;
-  --accent: #c084fc;
-  --accent-bg: rgba(192, 132, 252, 0.15);
-  --accent-border: rgba(192, 132, 252, 0.5);
-  --social-bg: rgba(47, 48, 58, 0.5);
-  --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
 }
 
-.dark-theme #social .button-icon {
-  filter: invert(1) brightness(2);
-}
+/* ── Base Elements ── */
 
-/* Add a smooth transition so the theme doesn't snap abruptly */
+/* Smooth background/text transitions app-wide (Removed duplicates!) */
 body {
   margin: 0;
-  background-color: var(--bg);
-  color: var(--text);
+  background-color: var(--bg-panel);
+  color: var(--text-primary);
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Keep the rest of your base styles the same */
 #root {
   width: 1126px;
   max-width: 100%;
