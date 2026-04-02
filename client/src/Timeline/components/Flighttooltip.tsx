@@ -31,30 +31,40 @@ export const FlightTooltip: React.FC<FlightTooltipProps> = ({ state }) => {
 
   return (
     <div
-      className="pointer-events-none fixed z-[999] min-w-[260px] rounded-2xl border border-white/[0.1] bg-[#0A0A0B]/80 p-5 text-sm text-white shadow-xl backdrop-blur-xl transition-[opacity,transform] duration-200 font-sans ease-out"
+      className="pointer-events-none fixed z-[999] min-w-[260px] rounded-2xl border p-5 backdrop-blur-xl transition-[opacity,transform] duration-200 font-sans ease-out"
       style={{
         left,
         top,
         opacity: state.visible ? 1 : 0,
-        transform: state.visible ? "scale(1) translateY(0)" : "scale(0.97) translateY(6px)"
+        transform: state.visible ? "scale(1) translateY(0)" : "scale(0.97) translateY(6px)",
+        // ── Theme Variables Applied Here ──
+        background: "color-mix(in srgb, var(--bg-surface) 85%, transparent)",
+        borderColor: "var(--border)",
+        color: "var(--text-primary)",
+        boxShadow: "var(--card-shadow)",
       }}
     >
       {f && (
         <>
-          {/* Header */}
-          <div className="mb-3 pb-3 flex items-center justify-between border-b border-white/[0.08] pb-4">
+          {/* ── Header ── */}
+          <div 
+            className="mb-3 pb-3 flex items-center justify-between border-b"
+            style={{ borderColor: "var(--border)" }}
+          >
             <div className="flex flex-col">
-              <span className="text-[15px] font-semibold font-sans tracking-tight text-white">
+              <span className="text-[15px] font-semibold tracking-tight">
                 {f.flight_number}
               </span>
-              <span className="text-xs font-medium text-white/50">{f.airline}</span>
+              <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+                {f.airline}
+              </span>
             </div>
             <span className={`rounded-lg border px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-widest ${STATUS_BADGE_CLASSES[f.status]}`}>
               {f.status.replace("_", " ")}
             </span>
           </div>
 
-          {/* Detail rows */}
+          {/* ── Detail Rows ── */}
           <div className="flex flex-col gap-2 text-[0.8rem]">
             {[
               { label: "Aircraft", value: f.aircraft_type },
@@ -62,17 +72,22 @@ export const FlightTooltip: React.FC<FlightTooltipProps> = ({ state }) => {
               { label: "Passengers", value: String(f.pax_count) },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between items-center">
-                <span className="text-white/40 font-medium tracking-wide uppercase text-[0.65rem]">
+                <span 
+                  className="font-medium tracking-wide uppercase text-[0.65rem]"
+                  style={{ color: "var(--text-muted)" }}
+                >
                   {label}
                 </span>
-                <b className="font-sans text-white/80 font-medium">{value}</b>
+                <b className="font-medium" style={{ color: "var(--text-primary)" }}>
+                  {value}
+                </b>
               </div>
             ))}
           </div>
 
-          {/* Conflict warning */}
+          {/* ── Conflict Warning ── */}
           {f.conflict && (
-            <div className="mt-4 rounded-lg bg-red-500/8 p-2.5 text-center text-[0.7rem] font-bold text-red-400 border border-red-500/30 uppercase tracking-widest anim-pulse">
+            <div className="mt-4 rounded-xl bg-red-500/10 p-2.5 text-center text-[0.7rem] font-bold text-red-500 border border-red-500/20 uppercase tracking-widest anim-pulse">
               Stand Overlap Detected
             </div>
           )}
