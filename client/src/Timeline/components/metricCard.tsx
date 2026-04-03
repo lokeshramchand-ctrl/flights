@@ -11,33 +11,59 @@ interface MetricCardProps {
 
 /**
  * A KPI card with an animated counting number on entry.
- * The ambient glow blob is decorative only (pointer-events: none).
+ * Fully responsive to Light/Dark mode using CSS variables.
  */
 export const MetricCard: React.FC<MetricCardProps> = ({ title, value, unit, sub, animDelay }) => {
   const animated = useCounterAnimation(value, 2000, animDelay * 1000 + 300);
 
   return (
     <div
-      className="anim-fade-up relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.04] to-transparent p-5 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-white/[0.2] hover:bg-white/[0.06] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(255,255,255,0.04)]"
-      style={{ animationDelay: `${animDelay}s` }}
+      className="anim-fade-up relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--bg-panel-hover)] group"
+      style={{ 
+        animationDelay: `${animDelay}s`,
+        background: "var(--bg-surface)",
+        borderColor: "var(--border)",
+        boxShadow: "var(--card-shadow)"
+      }}
     >
-      {/* Ambient glow */}
-      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-500/10 blur-3xl transition-all duration-500 pointer-events-none" />
+      {/* ── Ambient Glow ── */}
+      {/* Uses your global --tool-color variable to cast a subtle, theme-aware shadow */}
+      <div 
+        className="absolute -right-10 -top-10 h-32 w-32 rounded-full blur-3xl transition-all duration-500 pointer-events-none opacity-40 group-hover:opacity-70" 
+        style={{ background: "var(--tool-color)" }}
+      />
 
-      <p className="mb-2 text-[0.7rem] font-bold uppercase tracking-widest text-gray-400 font-sans z-10">
+      {/* ── Title ── */}
+      <p 
+        className="mb-2 text-[0.7rem] font-bold uppercase tracking-widest font-sans z-10"
+        style={{ color: "var(--text-muted)" }}
+      >
         {title}
       </p>
 
+      {/* ── Value & Unit ── */}
       <div className="flex items-baseline gap-2 z-10">
-        <span className="text-4xl md:text-5xl font-bold tracking-tighter text-white font-sans">
+        <span 
+          className="text-4xl md:text-5xl font-bold tracking-tighter font-sans"
+          style={{ color: "var(--text-primary)" }}
+        >
           {animated}
         </span>
         {unit && (
-          <span className="text-sm font-medium text-gray-400 font-sans">{unit}</span>
+          <span 
+            className="text-sm font-medium font-sans"
+            style={{ color: "var(--text-muted)" }}
+          >
+            {unit}
+          </span>
         )}
       </div>
 
-      <div className="mt-3 flex items-center gap-2 text-xs font-medium text-gray-400 font-sans z-10">
+      {/* ── Subtitle / Trend ── */}
+      <div 
+        className="mt-3 flex items-center gap-2 text-xs font-medium font-sans z-10"
+        style={{ color: "var(--text-secondary)" }}
+      >
         {sub}
       </div>
     </div>

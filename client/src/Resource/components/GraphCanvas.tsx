@@ -21,9 +21,7 @@ interface GraphCanvasProps {
 
 /**
  * GraphCanvas — thin, presentational wrapper around ReactFlow.
- *
- * All interaction events are surfaced as props so the parent can
- * update hover/selection state without this component holding any state.
+ * Fully responsive to global Light/Dark CSS variables.
  */
 export const GraphCanvas: React.FC<GraphCanvasProps> = ({
   nodes,
@@ -48,7 +46,16 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
     minZoom={0.5}
     maxZoom={2}
   >
-    <Background color="#27272a" gap={24} size={2} />
-    <Controls className="shadow-2xl border border-white/10 rounded-lg overflow-hidden m-6" />
+    {/* ── Theme-Aware Canvas Background ── */}
+    {/* Uses your global border variable so the grid dots perfectly match the theme */}
+    <Background color="var(--border)" gap={24} size={2} />
+    
+    {/* ── Theme-Aware Controls (Zoom/Pan) ── */}
+    <Controls 
+      className="shadow-sm border rounded-lg overflow-hidden m-4 sm:m-6 transition-colors duration-300"
+      style={{
+        borderColor: "var(--border)",
+      }}
+    />
   </ReactFlow>
 );

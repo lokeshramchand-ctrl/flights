@@ -5,7 +5,7 @@ import type { Flight, Stand } from "../types";
 
 interface GanttTimelineProps {
   hourWidth:          number;
-  stands:             Stand[];                      // ← from API via useFlights
+  stands:             Stand[];                      
   flightsByStand:     Record<string, Flight[]>;
   animIndexByFlight:  Record<string, number>;
   dragOverStand:      string | null;
@@ -40,16 +40,17 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
 
   return (
     <main
-      className="anim-fade-up relative flex flex-1 mx-4 mb-4 md:mx-8 md:mb-8 overflow-hidden rounded-2xl border shadow-sm transition-colors duration-300"
+      className="anim-fade-up relative flex flex-1 mx-4 mb-4 md:mx-8 md:mb-8 overflow-hidden rounded-2xl border transition-all duration-300"
       style={{ 
         animationDelay: "0.2s",
         background: "var(--bg-surface)",
-        borderColor: "var(--border)"
+        borderColor: "var(--border)",
+        boxShadow: "var(--card-shadow)" // ← Uses your global theme shadow
       }}
     >
       <div className="flex h-full w-full overflow-y-auto overflow-x-hidden relative scrollbar-hide">
 
-        {/* ── Stand Sidebar (sticky left) ── */}
+        {/* ── Stand Sidebar (Sticky Left) ── */}
         <div 
           className="sticky left-0 z-30 w-16 md:w-28 shrink-0 border-r backdrop-blur-xl transition-colors duration-300"
           style={{ 
@@ -64,7 +65,7 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
           >
             <span 
               className="text-[0.65rem] font-bold uppercase tracking-widest"
-              style={{ color: "var(--text-muted, var(--text-secondary))" }}
+              style={{ color: "var(--text-muted)" }}
             >
               Stands
             </span>
@@ -74,7 +75,7 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
           {stands.map((stand, i) => (
             <div
               key={stand.id}
-              className="anim-slide-in-left flex h-16 md:h-20 flex-col items-center justify-center border-b transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+              className="anim-slide-in-left flex h-16 md:h-20 flex-col items-center justify-center border-b transition-colors hover:bg-[var(--bg-panel-hover)]"
               style={{ 
                 animationDelay: `${0.2 + i * 0.05}s`,
                 borderColor: "var(--border)" 
@@ -97,7 +98,7 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
         >
           <div className="relative h-full" style={{ minWidth: `${HOUR_COUNT * hourWidth}px` }}>
 
-            {/* Time header */}
+            {/* Time Header */}
             <div 
               className="sticky top-0 z-20 flex h-12 md:h-14 border-b backdrop-blur-xl transition-colors duration-300"
               style={{ 
@@ -118,26 +119,29 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
               ))}
             </div>
 
-            {/* Vertical grid lines */}
-            <div className="absolute top-[56px] bottom-0 left-0 right-0 flex pointer-events-none z-0 opacity-40 dark:opacity-20">
+            {/* Vertical Grid Lines (Faded) */}
+            <div className="absolute top-[56px] bottom-0 left-0 right-0 flex pointer-events-none z-0">
               {Array.from({ length: HOUR_COUNT }, (_, i) => (
                 <div 
                   key={i} 
-                  className="shrink-0 border-l" 
-                  style={{ width: `${hourWidth}px`, borderColor: "var(--border)" }} 
+                  className="shrink-0 border-l transition-colors duration-300" 
+                  style={{ 
+                    width: `${hourWidth}px`, 
+                    borderColor: "color-mix(in srgb, var(--border) 50%, transparent)" // Fades the grid lines dynamically
+                  }} 
                 />
               ))}
             </div>
 
-            {/* Stand rows / drop targets */}
+            {/* Stand Rows / Drop Targets */}
             <div className="relative z-10">
               {stands.map((stand) => (
                 <div
                   key={stand.id}
                   className={`relative h-16 md:h-20 border-b transition-all duration-200 ${
                     dragOverStand === stand.id
-                      ? "bg-blue-500/10 border-dashed" // Drop target highlight
-                      : "hover:bg-black/5 dark:hover:bg-white/5 border-solid"
+                      ? "bg-blue-500/10 border-dashed" // Drop Target Highlight
+                      : "hover:bg-[var(--bg-panel-hover)] border-solid" // Normal Hover
                   }`}
                   style={{ 
                     borderColor: dragOverStand === stand.id ? "#3b82f6" : "var(--border)",
@@ -162,12 +166,19 @@ export const GanttTimeline: React.FC<GanttTimelineProps> = ({
               ))}
             </div>
 
-            {/* "Now" marker */}
+            {/* "Now" Marker */}
             <div
-              className="anim-fade-up absolute bottom-0 top-0 z-20 w-[2px] bg-emerald-500 pointer-events-none"
-              style={{ left: mockNowLeft, animationDelay: "0.8s" }}
+              className="anim-fade-up absolute bottom-0 top-0 z-20 w-[2px] pointer-events-none"
+              style={{ 
+                left: mockNowLeft, 
+                animationDelay: "0.8s",
+                background: "#10b981" // Emerald 500
+              }}
             >
-              <div className="absolute top-0 -translate-x-1/2 rounded-b-md bg-emerald-500 px-2.5 py-1 shadow-sm">
+              <div 
+                className="absolute top-0 -translate-x-1/2 rounded-b-md px-2.5 py-1 shadow-sm"
+                style={{ background: "#10b981" }}
+              >
                 <span className="text-[0.6rem] font-bold text-white uppercase tracking-widest">Now</span>
               </div>
             </div>
