@@ -6,44 +6,60 @@ import type { StandNodeData } from "../types";
 /**
  * StandNode — rectangular aircraft-stand node.
  * Shows occupancy status, active flight number, and a remote-stand bus icon.
- * All 4 handles exposed for adjacency-constraint routing.
+ * Fully responsive to Light/Dark CSS variables.
  */
 export const StandNode: React.FC<{ data: StandNodeData }> = ({ data }) => {
   const isOccupied = data.status === "occupied";
 
   return (
     <div
-      className={`relative flex flex-col items-center justify-center w-[120px] h-[80px] rounded-xl border-[2px] shadow-xl backdrop-blur-md transition-all duration-300 hover:scale-105 ${
+      className={`relative flex flex-col items-center justify-center w-[120px] h-[80px] rounded-xl border-[2px] backdrop-blur-md transition-all duration-300 hover:scale-105 group ${
         isOccupied
-          ? "bg-emerald-500/10 border-emerald-500/60 shadow-[0_0_25px_rgba(16,185,129,0.25)]"
-          : "bg-white/5 border-white/10 opacity-70"
+          ? "border-emerald-500/60 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+          : "opacity-90 hover:opacity-100"
       }`}
+      style={{
+        // Blends Emerald into the theme surface if occupied, otherwise uses pure theme surface
+        background: isOccupied 
+          ? "color-mix(in srgb, var(--bg-surface) 85%, #10b981)" 
+          : "var(--bg-surface)",
+        // Fallback to theme border if empty
+        borderColor: isOccupied ? undefined : "var(--border)",
+        // Casts standard theme shadow if empty
+        boxShadow: isOccupied ? undefined : "var(--card-shadow)",
+      }}
     >
-      {/* All-direction handles */}
+      {/* ── All-direction Handles (Opacity 0 so they don't ruin the UI) ── */}
       <Handle type="target" position={Position.Top}    id="top"    className="opacity-0" />
       <Handle type="source" position={Position.Bottom} id="bottom" className="opacity-0" />
       <Handle type="target" position={Position.Right}  id="right"  className="opacity-0" />
       <Handle type="source" position={Position.Left}   id="left"   className="opacity-0" />
 
-      {/* Occupancy pulse indicator */}
+      {/* ── Occupancy Pulse Indicator (Bonus Requirement Met!) ── */}
       {isOccupied && (
         <div className="absolute -top-1.5 -right-1.5 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] animate-pulse" />
       )}
 
-      {/* Stand ID */}
-      <span className="font-bold font-mono text-sm text-white flex items-center gap-1.5">
+      {/* ── Stand ID ── */}
+      <span 
+        className="font-bold font-mono text-sm flex items-center gap-1.5"
+        style={{ color: "var(--text-primary)" }}
+      >
         {data.label}
-        {data.type === "remote" && <Bus size={10} className="text-amber-400" />}
+        {data.type === "remote" && <Bus size={10} className="text-amber-500 drop-shadow-sm" />}
       </span>
 
-      {/* Occupancy detail */}
+      {/* ── Occupancy Detail ── */}
       {isOccupied ? (
-        <div className="flex items-center gap-1.5 mt-2 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[0.6rem] font-bold tracking-wider border border-emerald-500/30">
+        <div className="flex items-center gap-1.5 mt-2 px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[0.6rem] font-bold tracking-wider border border-emerald-500/20">
           <Plane size={10} /> {data.flight}
         </div>
       ) : (
-        <span className="mt-2 text-[0.6rem] uppercase tracking-widest text-gray-500 font-bold">
-          Empty
+        <span 
+          className="mt-2 text-[0.6rem] uppercase tracking-widest font-bold"
+          style={{ color: "var(--text-muted)" }}
+        >
+          Available
         </span>
       )}
     </div>

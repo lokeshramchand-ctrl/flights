@@ -8,7 +8,7 @@ interface LayerControlsProps {
   onToggleRoutes:     (v: boolean) => void;
 }
 
-/** Reusable toggle switch sub-component */
+/** Reusable theme-aware toggle switch */
 const Toggle: React.FC<{
   checked:   boolean;
   onChange:  (v: boolean) => void;
@@ -17,24 +17,29 @@ const Toggle: React.FC<{
 }> = ({ checked, onChange, activeColor, label }) => (
   <label className="flex items-center gap-3 cursor-pointer group">
     <div
-      className={`w-9 h-5 rounded-full transition-colors relative ${checked ? activeColor : "bg-gray-700"}`}
+      className={`w-9 h-5 rounded-full transition-colors duration-300 relative ${
+        checked ? activeColor : "bg-black/20 dark:bg-white/10"
+      }`}
       onClick={() => onChange(!checked)}
     >
       <div
-        className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-transform ${
+        className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-transform duration-300 ${
           checked ? "translate-x-5" : "translate-x-1"
         }`}
       />
     </div>
-    <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors flex items-center gap-2">
+    <span 
+      className="text-sm font-medium transition-colors flex items-center gap-2 group-hover:opacity-80"
+      style={{ color: "var(--text-primary)" }}
+    >
       {label}
     </span>
   </label>
 );
 
 /**
- * LayerControls — bottom-left panel for toggling topology edge categories.
- * Fully controlled: all state lives in the parent (useLayerVisibility hook).
+ * LayerControls — bottom-right panel for toggling topology edge categories.
+ * Fully responsive to Light/Dark CSS variables.
  */
 export const LayerControls: React.FC<LayerControlsProps> = ({
   showConstraints,
@@ -42,8 +47,18 @@ export const LayerControls: React.FC<LayerControlsProps> = ({
   onToggleConstraints,
   onToggleRoutes,
 }) => (
-  <div className="absolute bottom-6 left-6 z-10 flex flex-col gap-3 bg-[#0A0A0C]/90 backdrop-blur-xl border border-white/10 p-5 rounded-2xl shadow-2xl">
-    <div className="flex items-center gap-2 mb-1 text-xs font-bold uppercase tracking-widest text-gray-500">
+  <div 
+    className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-10 flex flex-col gap-3 backdrop-blur-xl border p-5 rounded-2xl transition-colors duration-300"
+    style={{
+      background: "color-mix(in srgb, var(--bg-surface) 85%, transparent)",
+      borderColor: "var(--border)",
+      boxShadow: "var(--card-shadow)"
+    }}
+  >
+    <div 
+      className="flex items-center gap-2 mb-1 text-xs font-bold uppercase tracking-widest"
+      style={{ color: "var(--text-muted)" }}
+    >
       <Layers size={14} /> Topology Layers
     </div>
 
@@ -53,7 +68,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({
       activeColor="bg-red-500"
       label={
         <>
-          <ShieldAlert size={14} className="text-red-400" />
+          <ShieldAlert size={14} className="text-red-500" />
           Adjacency Constraints
         </>
       }
@@ -65,7 +80,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({
       activeColor="bg-amber-500"
       label={
         <>
-          <Footprints size={14} className="text-amber-400" />
+          <Footprints size={14} className="text-amber-500" />
           Ground Routing
         </>
       }

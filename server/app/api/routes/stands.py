@@ -4,13 +4,15 @@ Stand-related API endpoints.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-
+from fastapi import APIRouter, Depends, status
+from pydantic import BaseModel
+from typing import Any, Optional
+from fastapi.responses import JSONResponse
+from app.schemas.schemas import StandardResponse 
 from app.core.dependencies import get_stand_service
-from app.core.exceptions import NotFoundError, ValidationError
+from app.core.exceptions import NotFoundError, ValidationError, format_error_response
 from app.schemas.schemas import (
     ErrorResponse,
-    StandResponse,
     StandScheduleResponse,
 )
 from app.services.stand_service import StandService
@@ -20,28 +22,35 @@ router = APIRouter(prefix="/stands", tags=["Stands"])
 
 @router.get(
     "",
-    response_model=list[StandResponse],
-    summary="List stands",
-    description="Returns all stands with live occupancy status. Supports filtering by terminal and type.",
+    response_model=StandardResponse,
+    summary="List stands with occupancy",
+    description="Returns all stands with live occupancy status, filtered by terminal and type.",
 )
-def list_stands(
-    terminal: str | None = Query(None, description="Filter by terminal (e.g. T1, T2)"),
-    type: str | None = Query(None, description="Filter by stand type: contact | remote"),
+def list_stands_with_occupancy(
+    terminal: str | None = None,
+    type: str | None = None,
     service: StandService = Depends(get_stand_service),
-) -> list[StandResponse]:
+) -> StandardResponse:
     try:
         stands = service.list_stands(terminal=terminal, stand_type=type)
+        meta = {
+            "total": len(stands),
+            "filters": {
+                "terminal": terminal,
+                "type": type,
+            },
+        }
+        return {"data": stands, "meta": meta}
     except ValidationError as exc:
-        raise HTTPException(
+        raise JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"code": "VALIDATION_ERROR", "message": str(exc)},
+            detail=format_error_response("VALIDATION_ERROR", str(exc)),
         )
-    return [StandResponse(**s) for s in stands]
 
 
 @router.get(
     "/{stand_id}/schedule",
-    response_model=StandScheduleResponse,
+    response_model=StandardResponse,
     summary="Get stand schedule",
     description="Returns the chronological sequence of flights assigned to a stand for the day.",
     responses={404: {"model": ErrorResponse}},
@@ -49,12 +58,12 @@ def list_stands(
 def get_stand_schedule(
     stand_id: str,
     service: StandService = Depends(get_stand_service),
-) -> StandScheduleResponse:
+) -> StandardResponse:
     try:
         result = service.get_stand_schedule(stand_id)
+        return {"data": StandScheduleResponse(**result)}
     except NotFoundError as exc:
-        raise HTTPException(
+        raise JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"code": "NOT_FOUND", "message": str(exc)},
+            detail=format_error_response("NOT_FOUND", str(exc)),
         )
-    return StandScheduleResponse(**result)

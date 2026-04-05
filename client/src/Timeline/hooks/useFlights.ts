@@ -11,11 +11,10 @@ async function fetchAllFlights(): Promise<Flight[]> {
   const data = await res.json();
   return data.data as Flight[];
 }
-
 async function fetchAllStands(): Promise<Stand[]> {
   const res = await fetch(`${BASE_URL}/stands`);
   const data = await res.json();
-  return data as Stand[];
+  return data.data as Stand[];   
 }
 
 async function apiReassign(flightId: string, standId: string): Promise<Flight> {

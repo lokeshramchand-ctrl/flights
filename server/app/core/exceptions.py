@@ -25,3 +25,8 @@ class ValidationError(Exception):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
+
+
+def format_error_response(code: str, message: str) -> dict:
+    """Helper to format error responses consistently."""
+    return {"error": {"code": code, "message": message}}

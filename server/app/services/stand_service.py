@@ -20,8 +20,7 @@ def _parse_dt(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def _is_currently_occupied(flight: dict[str, Any]) -> bool:
-    now = _now_utc()
+def _is_currently_occupied(flight: dict[str, Any], now: datetime) -> bool:
     start = _parse_dt(flight["block_time_start"])
     end = _parse_dt(flight["block_time_end"])
     return start <= now < end
@@ -66,7 +65,7 @@ class StandService:
 
         flights = self._store.get_flights()
         assigned = [f for f in flights if f["assigned_stand"] == stand_id]
-        assigned.sort(key=lambda f: f["block_time_start"])
+        assigned.sort(key=lambda f: _parse_dt(f["block_time_start"]))
 
         schedule = [
             {
@@ -98,7 +97,7 @@ class StandService:
             (
                 f
                 for f in flights
-                if f["assigned_stand"] == stand["id"] and _is_currently_occupied(f)
+                if f["assigned_stand"] == stand["id"] and _is_currently_occupied(f, _now_utc())
             ),
             None,
         )
@@ -107,3 +106,14 @@ class StandService:
             "is_occupied": current is not None,
             "current_flight_id": current["id"] if current else None,
         }
+
+    # ------------------------------------------------------------------
+    # Stand occupancy
+    # ------------------------------------------------------------------
+
+    def get_stands_with_occupancy(self) -> list[dict[str, Any]]:
+        """
+        Returns a list of stands with their current occupancy status.
+        """
+        stands = self._store.get_stands()
+        return [self._enrich_occupancy(s) for s in stands]

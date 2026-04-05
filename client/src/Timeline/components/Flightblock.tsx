@@ -12,17 +12,41 @@ interface FlightBlockProps {
   onTooltipMove:   (e: React.MouseEvent) => void;
 }
 
-/** Inline styles applied only to conflict blocks so the stripe pattern can't be expressed in Tailwind */
-const CONFLICT_STYLE: React.CSSProperties = {
-  background:  "repeating-linear-gradient(-45deg, rgba(239,68,68,0.15), rgba(239,68,68,0.15) 10px, rgba(239,68,68,0.25) 10px, rgba(239,68,68,0.25) 20px)",
-  borderColor: "rgba(239,68,68,0.6)",
-  color:       "#fecaca",
+/**
+ * Generates theme-aware styles. 
+ * By relying on var(--bg-surface), the blocks automatically switch 
+ * from white (Light Mode) to dark gray (Dark Mode).
+ */
+const getBlockStyle = (f: Flight): React.CSSProperties => {
+  const baseStyle: React.CSSProperties = {
+    background: "var(--bg-surface)",
+    borderColor: "var(--border)",
+    color: "var(--text-primary)",
+  };
+
+  if (f.conflict) {
+    return {
+      ...baseStyle,
+      borderLeft: "4px solid #ef4444", // Red-500 edge
+      // A subtle hazard stripe that overlays beautifully on both light and dark backgrounds
+      backgroundImage: "repeating-linear-gradient(-45deg, rgba(239,68,68,0.08), rgba(239,68,68,0.08) 8px, transparent 8px, transparent 16px)",
+    };
+  }
+
+  if (f.terminal === "T1") {
+    return {
+      ...baseStyle,
+      borderLeft: "4px solid #3b82f6", // Blue-500 edge
+    };
+  }
+
+  // Default / Terminal 2
+  return {
+    ...baseStyle,
+    borderLeft: "4px solid #8b5cf6", // Violet-500 edge
+  };
 };
 
-/**
- * A single draggable flight block rendered on the Gantt timeline.
- * Position and width are calculated from block times × hourWidth.
- */
 export const FlightBlock: React.FC<FlightBlockProps> = ({
   flight: f,
   hourWidth,
@@ -35,28 +59,24 @@ export const FlightBlock: React.FC<FlightBlockProps> = ({
   const startDec = getDecimalHours(f.block_time_start);
   const endDec   = getDecimalHours(f.block_time_end);
 
-  const baseClass = f.conflict
-    ? "border shadow-[0_0_15px_rgba(239,68,68,0.3)] anim-pulse-border"
-    : f.terminal === "T1"
-      ? "border border-blue-400/10 bg-gradient-to-r from-blue-500/15 to-blue-500/5 text-blue-100 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:border-blue-400/50"
-      : "border border-violet-400/10 bg-gradient-to-r from-violet-500/15 to-violet-500/5 text-violet-100 shadow-[0_0_15px_rgba(139,92,246,0.1)] hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-400/50";
-
   return (
     <div
       draggable
-      className={`anim-pop-in absolute top-[10px] flex cursor-grab select-none items-center overflow-hidden rounded-lg px-2.5 py-1.5 backdrop-blur-md active:cursor-grabbing hover:z-20 transition-all duration-150 hover:-translate-y-[1px] hover:scale-[1.01] ${baseClass}`}
+      className={`anim-pop-in absolute top-[10px] flex cursor-grab select-none items-center overflow-hidden rounded-lg px-2.5 py-1.5 shadow-sm border active:cursor-grabbing hover:z-20 transition-all duration-150 hover:-translate-y-[1px] hover:shadow-md ${
+        f.conflict ? "anim-pulse-border" : ""
+      }`}
       style={{
         left:           `${startDec * hourWidth}px`,
         width:          `${(endDec - startDec) * hourWidth}px`,
         height:         "calc(100% - 20px)",
         animationDelay: `${0.8 + animIndex * 0.05}s`,
-        ...(f.conflict ? CONFLICT_STYLE : {}),
+        ...getBlockStyle(f),
       }}
       onDragStart={(e) => {
         onDragStart(f.id);
         e.dataTransfer.effectAllowed = "move";
-        e.currentTarget.style.opacity   = "0.4";
-        e.currentTarget.style.transform = "scale(0.97)";
+        e.currentTarget.style.opacity   = "0.6";
+        e.currentTarget.style.transform = "scale(0.98)";
       }}
       onDragEnd={(e) => {
         e.currentTarget.style.opacity   = "1";
@@ -66,15 +86,17 @@ export const FlightBlock: React.FC<FlightBlockProps> = ({
       onMouseLeave={onTooltipLeave}
       onMouseMove={onTooltipMove}
     >
-      <div className="flex flex-col leading-tight pointer-events-none w-full">
-        <span className="text-[13px] font-semibold font-sans tracking-tight">{f.flight_number}</span>
-        <span className="text-[10px] opacity-50 font-medium opacity-60 font-sans uppercase tracking-widest mt-0.5 truncate">
+      <div className="flex flex-col leading-tight pointer-events-none w-full min-w-0">
+        <span className="text-[13px] font-semibold font-sans tracking-tight truncate">
+          {f.flight_number}
+        </span>
+        <span 
+          className="text-[10px] font-medium font-sans uppercase tracking-widest mt-0.5 truncate" 
+          style={{ color: "var(--text-secondary)" }}
+        >
           {f.aircraft_type}
         </span>
       </div>
-
-      {/* Decorative top-edge inner glow */}
-      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.03] pointer-events-none rounded-lg" />
     </div>
   );
 };
