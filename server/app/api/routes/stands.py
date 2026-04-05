@@ -4,19 +4,17 @@ Stand-related API endpoints.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, JSONResponse, status
 from pydantic import BaseModel
 from typing import Any, Optional
 
-class StandardResponse(BaseModel):
-    data: Any
-    meta: Optional[dict] = None
 
 from app.core.dependencies import get_stand_service
-from app.core.exceptions import NotFoundError, ValidationError
+from app.core.exceptions import NotFoundError, ValidationError, format_error_response
 from app.schemas.schemas import (
     ErrorResponse,
     StandScheduleResponse,
+    StandardResponse,
 )
 from app.services.stand_service import StandService
 
@@ -33,7 +31,7 @@ def list_stands_with_occupancy(
     terminal: str | None = None,
     type: str | None = None,
     service: StandService = Depends(get_stand_service),
-) -> dict:
+) -> StandardResponse:
     try:
         stands = service.list_stands(terminal=terminal, stand_type=type)
         meta = {
@@ -45,9 +43,9 @@ def list_stands_with_occupancy(
         }
         return {"data": stands, "meta": meta}
     except ValidationError as exc:
-        raise HTTPException(
+        raise JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"code": "VALIDATION_ERROR", "message": str(exc)},
+            detail=format_error_response("VALIDATION_ERROR", str(exc)),
         )
 
 
@@ -66,7 +64,7 @@ def get_stand_schedule(
         result = service.get_stand_schedule(stand_id)
         return {"data": StandScheduleResponse(**result)}
     except NotFoundError as exc:
-        raise HTTPException(
+        raise JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={"code": "NOT_FOUND", "message": str(exc)},
+            detail=format_error_response("NOT_FOUND", str(exc)),
         )

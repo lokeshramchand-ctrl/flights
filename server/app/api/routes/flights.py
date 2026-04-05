@@ -4,10 +4,10 @@ Flight-related API endpoints.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, JSONResponse, Query, status
 
 from app.core.dependencies import get_flight_service
-from app.core.exceptions import ConflictError, NotFoundError, ValidationError
+from app.core.exceptions import ConflictError, NotFoundError, ValidationError, format_error_response
 from app.schemas.schemas import (
     ErrorResponse,
     FlightResponse,
@@ -19,24 +19,24 @@ from server.app.api.routes.stands import StandardResponse
 router = APIRouter(prefix="/flights", tags=["Flights"])
 
 
-def _validation_error_response(msg: str) -> HTTPException:
-    return HTTPException(
+def _validation_error_response(msg: str) -> JSONResponse:
+    return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        detail={"code": "VALIDATION_ERROR", "message": msg},
+        detail=format_error_response("VALIDATION_ERROR", msg),
     )
 
 
-def _not_found_response(exc: NotFoundError) -> HTTPException:
-    return HTTPException(
+def _not_found_response(exc: NotFoundError) -> JSONResponse:
+    return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail={"code": "NOT_FOUND", "message": str(exc)},
+        detail=format_error_response("NOT_FOUND", str(exc)),
     )
 
 
-def _conflict_response(exc: ConflictError) -> HTTPException:
-    return HTTPException(
+def _conflict_response(exc: ConflictError) -> JSONResponse:
+    return JSONResponse(
         status_code=status.HTTP_409_CONFLICT,
-        detail={"code": "CONFLICT", "message": str(exc)},
+        detail=format_error_response("CONFLICT", str(exc)),
     )
 
 
@@ -56,7 +56,7 @@ def list_flights(
     page: int = Query(1, ge=1, description="Page number (1-based)"),
     per_page: int = Query(10, ge=1, le=100, description="Number of items per page"),
     service: FlightService = Depends(get_flight_service),
-) -> dict:
+) -> StandardResponse:
     try:
         flights, total = service.list_flights(
             terminal=terminal,
@@ -110,7 +110,7 @@ def reassign_flight(
     flight_id: str,
     body: ReassignRequest,
     service: FlightService = Depends(get_flight_service),
-) -> dict:
+) -> StandardResponse:
     try:
         updated = service.reassign_flight(flight_id, body.target_stand_id)
         return {"data": FlightResponse(**updated)}

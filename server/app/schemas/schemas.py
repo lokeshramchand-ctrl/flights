@@ -6,7 +6,7 @@ Keeping schemas separate from domain models keeps serialisation concerns isolate
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -118,3 +118,8 @@ class ReassignRequest(BaseModel):
     @classmethod
     def strip_whitespace(cls, v: str) -> str:
         return v.strip()
+
+class StandardResponse(BaseModel):
+    data: Any
+    meta: Optional[dict] = None
+    
