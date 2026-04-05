@@ -5,6 +5,12 @@ Stand-related API endpoints.
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
+from typing import Any, Optional
+
+class StandardResponse(BaseModel):
+    data: Any
+    meta: Optional[dict] = None
 
 from app.core.dependencies import get_stand_service
 from app.core.exceptions import NotFoundError, ValidationError
@@ -19,7 +25,7 @@ router = APIRouter(prefix="/stands", tags=["Stands"])
 
 @router.get(
     "",
-    response_model=dict,
+    response_model=StandardResponse,
     summary="List stands with occupancy",
     description="Returns all stands with live occupancy status, filtered by terminal and type.",
 )
@@ -30,7 +36,14 @@ def list_stands_with_occupancy(
 ) -> dict:
     try:
         stands = service.list_stands(terminal=terminal, stand_type=type)
-        return {"data": stands}
+        meta = {
+            "total": len(stands),
+            "filters": {
+                "terminal": terminal,
+                "type": type,
+            },
+        }
+        return {"data": stands, "meta": meta}
     except ValidationError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -40,7 +53,7 @@ def list_stands_with_occupancy(
 
 @router.get(
     "/{stand_id}/schedule",
-    response_model=StandScheduleResponse,
+    response_model=StandardResponse,
     summary="Get stand schedule",
     description="Returns the chronological sequence of flights assigned to a stand for the day.",
     responses={404: {"model": ErrorResponse}},
@@ -48,12 +61,12 @@ def list_stands_with_occupancy(
 def get_stand_schedule(
     stand_id: str,
     service: StandService = Depends(get_stand_service),
-) -> StandScheduleResponse:
+) -> StandardResponse:
     try:
         result = service.get_stand_schedule(stand_id)
+        return {"data": StandScheduleResponse(**result)}
     except NotFoundError as exc:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"code": "NOT_FOUND", "message": str(exc)},
         )
-    return StandScheduleResponse(**result)
