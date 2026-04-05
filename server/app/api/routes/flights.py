@@ -4,7 +4,8 @@ Flight-related API endpoints.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, JSONResponse, Query, status
+from fastapi import APIRouter, Depends, Query, status
+from fastapi.responses import JSONResponse
 
 from app.core.dependencies import get_flight_service
 from app.core.exceptions import ConflictError, NotFoundError, ValidationError, format_error_response
