@@ -4,17 +4,16 @@ Stand-related API endpoints.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, JSONResponse, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 from typing import Any, Optional
-
-
+from fastapi.responses import JSONResponse
+from app.schemas.schemas import StandardResponse 
 from app.core.dependencies import get_stand_service
 from app.core.exceptions import NotFoundError, ValidationError, format_error_response
 from app.schemas.schemas import (
     ErrorResponse,
     StandScheduleResponse,
-    StandardResponse,
 )
 from app.services.stand_service import StandService
 

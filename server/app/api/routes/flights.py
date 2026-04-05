@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query, status
 from fastapi.responses import JSONResponse
-
+from app.schemas.schemas import StandardResponse
 from app.core.dependencies import get_flight_service
 from app.core.exceptions import ConflictError, NotFoundError, ValidationError, format_error_response
 from app.schemas.schemas import (
@@ -15,7 +15,6 @@ from app.schemas.schemas import (
     ReassignRequest,
 )
 from app.services.flight_service import FlightService
-from server.app.api.routes.stands import StandardResponse
 
 router = APIRouter(prefix="/flights", tags=["Flights"])
 
