@@ -22,21 +22,21 @@ router = APIRouter(prefix="/flights", tags=["Flights"])
 def _validation_error_response(msg: str) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        detail=format_error_response("VALIDATION_ERROR", msg),
+        content=format_error_response("VALIDATION_ERROR", msg),
     )
 
 
 def _not_found_response(exc: NotFoundError) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=format_error_response("NOT_FOUND", str(exc)),
+        content=format_error_response("NOT_FOUND", str(exc)),
     )
 
 
 def _conflict_response(exc: ConflictError) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_409_CONFLICT,
-        detail=format_error_response("CONFLICT", str(exc)),
+        content=format_error_response("CONFLICT", str(exc)),
     )
 
 
@@ -119,4 +119,4 @@ def reassign_flight(
     except ValidationError as exc:
         raise _validation_error_response(str(exc))
     except ConflictError as exc:
-        raise _conflict_response(exc)
+        return _conflict_response(exc)
