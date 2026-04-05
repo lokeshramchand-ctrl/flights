@@ -5,7 +5,7 @@ No HTTP concerns live here; the service works purely with domain data.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any
 
 from app.core.constants import (
@@ -54,7 +54,7 @@ class FlightService:
         order: str = "asc",
         page: int = 1,
         per_page: int = 10,
-    ) -> tuple[Any, int]:
+    ) -> tuple[list[dict[str, Any]], int]:
         # --- validate query params ---
         if status is not None and status not in VALID_STATUSES:
             raise ValidationError(
@@ -62,7 +62,7 @@ class FlightService:
             )
         if sort not in VALID_SORT_FIELDS:
             raise ValidationError(
-                f"Invalid sort field '{sort}'. Must be one of: {', '.join(sorted(VALID_SORT_FIELDS))}."
+                f"Invalid sort field '{sort}'. Must be one of: {', '.join(VALID_SORT_FIELDS)}."
             )
         if order not in VALID_SORT_ORDERS:
             raise ValidationError("Order must be 'asc' or 'desc'.")
@@ -98,7 +98,7 @@ class FlightService:
 
         # --- sort ---
         def _sort_key(f):
-            if sort in ["scheduled_time"]:
+            if sort == "scheduled_time":
                 return parse_iso(f[sort])
             return f[sort]
 
@@ -154,17 +154,10 @@ class FlightService:
             )
 
         # 4. No time-window overlap with other flights already at target stand
+        flights_on_stand = self.get_flights_by_stand(target_stand_id)
         conflicts = [
-            f
-            for f in self._store.get_flights()
-            if f["assigned_stand"] == target_stand_id
-            and f["id"] != flight_id
-            and _blocks_overlap(
-                flight["block_time_start"],
-                flight["block_time_end"],
-                f["block_time_start"],
-                f["block_time_end"],
-            )
+            f for f in flights_on_stand
+            if f["id"] != flight_id and self.is_overlap(flight, f)
         ]
         if conflicts:
             conflict_ids = ", ".join(c["flight_number"] for c in conflicts)
@@ -182,3 +175,21 @@ class FlightService:
             },
         )
         return updated  # type: ignore[return-value]
+
+    def get_flights_by_stand(self, stand_id: str) -> list[dict[str, Any]]:
+        """
+        Retrieve all flights assigned to a specific stand.
+        """
+        return [f for f in self._store.get_flights() if f["assigned_stand"] == stand_id]
+
+    @staticmethod
+    def is_overlap(f1: dict[str, Any], f2: dict[str, Any]) -> bool:
+        """
+        Check if two flights have overlapping block times.
+        """
+        return _blocks_overlap(
+            f1["block_time_start"],
+            f1["block_time_end"],
+            f2["block_time_start"],
+            f2["block_time_end"],
+        )
